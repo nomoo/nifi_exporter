@@ -212,7 +212,7 @@ func (c *DiagnosticsCollector) Collect(ch chan<- prometheus.Metric) {
 	if len(diagnostics.NodeSnapshots) > 0 {
 		for i := range diagnostics.NodeSnapshots {
 			snapshot := &diagnostics.NodeSnapshots[i]
-			nodes[snapshot.NodeID] = &snapshot.Snapshot
+			nodes[snapshot.Address] = &snapshot.Snapshot
 		}
 	} else if diagnostics.AggregateSnapshot != nil {
 		nodes[AggregateNodeID] = diagnostics.AggregateSnapshot
