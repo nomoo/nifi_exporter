@@ -8,13 +8,15 @@ import (
 
 type CountersCollector struct {
 	alias              string
+	key                string
 	api                *client.Client
 	counterTotalMetric *prometheus.Desc
 }
 
-func NewCountersCollector(api *client.Client, labels map[string]string) *CountersCollector {
+func NewCountersCollector(api *client.Client, labels map[string]string, key string) *CountersCollector {
 	return &CountersCollector{
 		api: api,
+		key: key,
 		counterTotalMetric: prometheus.NewDesc(
 			MetricNamePrefix+"counter_total",
 			"The value of the counter.",
@@ -42,7 +44,13 @@ func (c *CountersCollector) Collect(ch chan<- prometheus.Metric) {
 	if len(counterStats.NodeSnapshots) > 0 {
 		for i := range counterStats.NodeSnapshots {
 			snapshot := &counterStats.NodeSnapshots[i]
-			nodes[snapshot.NodeID] = snapshot.Snapshot.Counters
+
+			if c.key == "address" {
+				nodes[snapshot.Address] = snapshot.Snapshot.Counters
+			} else {
+				nodes[snapshot.NodeID] = snapshot.Snapshot.Counters
+			}
+
 		}
 	} else if counterStats.AggregateSnapshot != nil {
 		nodes[AggregateNodeID] = counterStats.AggregateSnapshot.Counters

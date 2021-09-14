@@ -85,9 +85,9 @@ func NewClient(baseURL, username, password, caCertificates string) (*Client, err
 func (c *Client) GetCounters(nodewise bool, clusterNodeId string) (*CountersDTO, error) {
 	query := url.Values{}
 	if nodewise {
-		query.Add("nodewise", "1")
+		query.Add("nodewise", "true")
 	} else {
-		query.Add("nodewise", "0")
+		query.Add("nodewise", "false")
 	}
 	if len(clusterNodeId) > 0 {
 		query.Add("clusterNodeId", clusterNodeId)
@@ -180,9 +180,9 @@ func (c *Client) getDeepProcessGroups(parentID string, groupsEntity *ProcessGrou
 func (c *Client) GetSystemDiagnostics(nodewise bool, clusterNodeId string) (*SystemDiagnosticsDTO, error) {
 	query := url.Values{}
 	if nodewise {
-		query.Add("nodewise", "1")
+		query.Add("nodewise", "true")
 	} else {
-		query.Add("nodewise", "0")
+		query.Add("nodewise", "false")
 	}
 	if len(clusterNodeId) > 0 {
 		query.Add("clusterNodeId", clusterNodeId)

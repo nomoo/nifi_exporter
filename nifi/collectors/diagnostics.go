@@ -36,18 +36,20 @@ type storageMetrics struct {
 
 type DiagnosticsCollector struct {
 	api *client.Client
+	key string
 
 	generalMetrics
 	jvmMetrics
 	storageMetrics
 }
 
-func NewDiagnosticsCollector(api *client.Client, labels map[string]string) *DiagnosticsCollector {
+func NewDiagnosticsCollector(api *client.Client, labels map[string]string, key string) *DiagnosticsCollector {
 	basicLabels := []string{"node_id"}
 	jvmMetricsPrefix := MetricNamePrefix + "jvm_"
 	storageMetricsPrefix := MetricNamePrefix + "stor_"
 	return &DiagnosticsCollector{
 		api: api,
+		key: key,
 
 		generalMetrics: generalMetrics{
 			info: prometheus.NewDesc(
@@ -212,7 +214,13 @@ func (c *DiagnosticsCollector) Collect(ch chan<- prometheus.Metric) {
 	if len(diagnostics.NodeSnapshots) > 0 {
 		for i := range diagnostics.NodeSnapshots {
 			snapshot := &diagnostics.NodeSnapshots[i]
-			nodes[snapshot.NodeID] = &snapshot.Snapshot
+
+			if c.key == "address" {
+				nodes[snapshot.Address] = &snapshot.Snapshot
+			} else {
+				nodes[snapshot.NodeID] = &snapshot.Snapshot
+			}
+
 		}
 	} else if diagnostics.AggregateSnapshot != nil {
 		nodes[AggregateNodeID] = diagnostics.AggregateSnapshot

@@ -7,6 +7,7 @@ import (
 
 type ProcessGroupsCollector struct {
 	api *client.Client
+	key string
 
 	bulletin5mCount *prometheus.Desc
 	componentCount  *prometheus.Desc
@@ -28,11 +29,12 @@ type ProcessGroupsCollector struct {
 	activeThreadCount           *prometheus.Desc
 }
 
-func NewProcessGroupsCollector(api *client.Client, labels map[string]string) *ProcessGroupsCollector {
+func NewProcessGroupsCollector(api *client.Client, labels map[string]string, key string) *ProcessGroupsCollector {
 	prefix := MetricNamePrefix + "pg_"
 	statLabels := []string{"node_id", "group", "entity_id"}
 	return &ProcessGroupsCollector{
 		api: api,
+		key: key,
 
 		bulletin5mCount: prometheus.NewDesc(
 			prefix+"bulletin_5m_count",
@@ -198,7 +200,13 @@ func (c *ProcessGroupsCollector) collect(ch chan<- prometheus.Metric, entity *cl
 	if len(entity.Status.NodeSnapshots) > 0 {
 		for i := range entity.Status.NodeSnapshots {
 			snapshot := &entity.Status.NodeSnapshots[i]
-			nodes[snapshot.NodeID] = &snapshot.StatusSnapshot
+
+			if c.key == "address" {
+				nodes[snapshot.Address] = &snapshot.StatusSnapshot
+			} else {
+				nodes[snapshot.NodeID] = &snapshot.StatusSnapshot
+			}
+
 		}
 	} else if entity.Status.AggregateSnapshot != nil {
 		nodes[AggregateNodeID] = entity.Status.AggregateSnapshot
