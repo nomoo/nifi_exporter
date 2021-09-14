@@ -217,10 +217,10 @@ func (c *DiagnosticsCollector) Collect(ch chan<- prometheus.Metric) {
 
 			if c.key == "address" {
 				nodes[snapshot.Address] = &snapshot.Snapshot
-		} else {
+			} else {
 				nodes[snapshot.NodeID] = &snapshot.Snapshot
 			}
-			
+
 		}
 	} else if diagnostics.AggregateSnapshot != nil {
 		nodes[AggregateNodeID] = diagnostics.AggregateSnapshot

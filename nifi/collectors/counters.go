@@ -47,7 +47,7 @@ func (c *CountersCollector) Collect(ch chan<- prometheus.Metric) {
 
 			if c.key == "address" {
 				nodes[snapshot.Address] = snapshot.Snapshot.Counters
-		} else {
+			} else {
 				nodes[snapshot.NodeID] = snapshot.Snapshot.Counters
 			}
 
