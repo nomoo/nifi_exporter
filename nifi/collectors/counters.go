@@ -8,7 +8,7 @@ import (
 
 type CountersCollector struct {
 	alias              string
-	key 							 string
+	key                string
 	api                *client.Client
 	counterTotalMetric *prometheus.Desc
 }
