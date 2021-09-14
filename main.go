@@ -30,6 +30,7 @@ type Configuration struct {
 		CACertificates string            `yaml:"caCertificates"`
 		Username       string            `yaml:"username" validate:"required"`
 		Password       string            `yaml:"password" validate:"required"`
+		Key						 string            `yaml:"key" validate:"required"`
 		Labels         map[string]string `yaml:"labels"`
 	} `yaml:"nodes" validate:"required,dive"`
 }
@@ -107,14 +108,15 @@ func start(config *Configuration) error {
 			"labels":   node.Labels,
 			"url":      node.URL,
 			"username": node.Username,
+			"key":			node.Key,
 		}).Info("Registering NiFi node...")
-		if err := prometheus.DefaultRegisterer.Register(collectors.NewDiagnosticsCollector(api, node.Labels)); err != nil {
+		if err := prometheus.DefaultRegisterer.Register(collectors.NewDiagnosticsCollector(api, node.Labels, node.Key)); err != nil {
 			return errors.Annotate(err, "Couldn't register system diagnostics collector.")
 		}
-		if err := prometheus.DefaultRegisterer.Register(collectors.NewCountersCollector(api, node.Labels)); err != nil {
+		if err := prometheus.DefaultRegisterer.Register(collectors.NewCountersCollector(api, node.Labels, node.Key)); err != nil {
 			return errors.Annotate(err, "Couldn't register counters collector.")
 		}
-		if err := prometheus.DefaultRegisterer.Register(collectors.NewProcessGroupsCollector(api, node.Labels)); err != nil {
+		if err := prometheus.DefaultRegisterer.Register(collectors.NewProcessGroupsCollector(api, node.Labels, node.Key)); err != nil {
 			return errors.Annotate(err, "Couldn't register process groups collector.")
 		}
 		if err := prometheus.DefaultRegisterer.Register(collectors.NewConnectionsCollector(api, node.Labels)); err != nil {

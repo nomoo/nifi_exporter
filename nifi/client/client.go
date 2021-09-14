@@ -87,7 +87,7 @@ func (c *Client) GetCounters(nodewise bool, clusterNodeId string) (*CountersDTO,
 	if nodewise {
 		query.Add("nodewise", "true")
 	} else {
-		query.Add("nodewise", "0")
+		query.Add("nodewise", "false")
 	}
 	if len(clusterNodeId) > 0 {
 		query.Add("clusterNodeId", clusterNodeId)
@@ -182,7 +182,7 @@ func (c *Client) GetSystemDiagnostics(nodewise bool, clusterNodeId string) (*Sys
 	if nodewise {
 		query.Add("nodewise", "true")
 	} else {
-		query.Add("nodewise", "0")
+		query.Add("nodewise", "false")
 	}
 	if len(clusterNodeId) > 0 {
 		query.Add("clusterNodeId", clusterNodeId)
