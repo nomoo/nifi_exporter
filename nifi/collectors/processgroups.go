@@ -203,7 +203,7 @@ func (c *ProcessGroupsCollector) collect(ch chan<- prometheus.Metric, entity *cl
 
 			if c.key == "address" {
 				nodes[snapshot.Address] = &snapshot.StatusSnapshot
-		  } else {
+			} else {
 				nodes[snapshot.NodeID] = &snapshot.StatusSnapshot
 			}
 
